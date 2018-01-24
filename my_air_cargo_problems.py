@@ -103,12 +103,11 @@ class AirCargoProblem(Problem):
                 for to in self.airports:
                     if fr != to:
                         for p in self.planes:
-                            precond_pos = [expr("At({}, {})".format(p, fr)),
-                                           ]
+                            precond = [expr("At({}, {})".format(p, fr))]
                             effect_add = [expr("At({}, {})".format(p, to))]
                             effect_rem = [expr("At({}, {})".format(p, fr))]
                             fly = Action(expr("Fly({}, {}, {})".format(p, fr, to)),
-                                         [precond_pos, []],
+                                         [precond, []],
                                          [effect_add, effect_rem])
                             flys.append(fly)
             return flys
@@ -132,10 +131,12 @@ class AirCargoProblem(Problem):
             for clause in action.precond_pos:
                 if clause not in kb.clauses:
                     possible = False
+                    break
             
             for clause in action.precond_neg:
                 if clause in kb.clauses:
                     possible = False
+                    break
             
             if possible:
                 possible_actions.append(action)
@@ -252,19 +253,19 @@ def air_cargo_p2() -> AirCargoProblem:
            expr('At(C3, ATL)')]
     neg = [expr('At(C1, JFK)'),
            expr('At(C1, ATL)'),
-           expr('At(C1, P1)'),
-           expr('At(C1, P2)'),
-           expr('At(C1, P3)'),
+           expr('In(C1, P1)'),
+           expr('In(C1, P2)'),
+           expr('In(C1, P3)'),
            expr('At(C2, SFO)'),
            expr('At(C2, ATL)'),
-           expr('At(C2, P1)'),
-           expr('At(C2, P2)'),
-           expr('At(C2, P3)'),
+           expr('In(C2, P1)'),
+           expr('In(C2, P2)'),
+           expr('In(C2, P3)'),
            expr('At(C3, JFK)'),
            expr('At(C3, SFO)'),
-           expr('At(C3, P1)'),
-           expr('At(C3, P2)'),
-           expr('At(C3, P3)'),
+           expr('In(C3, P1)'),
+           expr('In(C3, P2)'),
+           expr('In(C3, P3)'),
            expr('At(P1, JFK)'),
            expr('At(P1, ATL)'),
            expr('At(P2, SFO)'),
@@ -291,23 +292,23 @@ def air_cargo_p3() -> AirCargoProblem:
     neg = [expr('At(C1, JFK)'),
            expr('At(C1, ATL)'),
            expr('At(C1, ORD)'),
-           expr('At(C1, P1)'),
-           expr('At(C1, P2)'),
+           expr('In(C1, P1)'),
+           expr('In(C1, P2)'),
            expr('At(C2, SFO)'),
            expr('At(C2, ATL)'),
            expr('At(C2, ORD)'),
-           expr('At(C2, P1)'),
-           expr('At(C2, P2)'),
+           expr('In(C2, P1)'),
+           expr('In(C2, P2)'),
            expr('At(C3, SFO)'),
            expr('At(C3, JFK)'),
            expr('At(C3, ORD)'),
-           expr('At(C3, P1)'),
-           expr('At(C3, P2)'),
+           expr('In(C3, P1)'),
+           expr('In(C3, P2)'),
            expr('At(C4, SFO)'),
            expr('At(C4, JFK)'),
            expr('At(C4, ATL)'),
-           expr('At(C4, P1)'),
-           expr('At(C4, P2)'),
+           expr('In(C4, P1)'),
+           expr('In(C4, P2)'),
            expr('At(P1, JFK)'),
            expr('At(P1, ATL)'),
            expr('At(P1, ORD)'),
