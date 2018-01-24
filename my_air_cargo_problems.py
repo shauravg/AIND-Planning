@@ -105,16 +105,16 @@ class AirCargoProblem(Problem):
                         for p in self.planes:
                             precond_pos = [expr("At({}, {})".format(p, fr)),
                                            ]
-                            precond_neg = []
                             effect_add = [expr("At({}, {})".format(p, to))]
                             effect_rem = [expr("At({}, {})".format(p, fr))]
                             fly = Action(expr("Fly({}, {}, {})".format(p, fr, to)),
-                                         [precond_pos, precond_neg],
+                                         [precond_pos, []],
                                          [effect_add, effect_rem])
                             flys.append(fly)
             return flys
 
         return load_actions() + unload_actions() + fly_actions()
+
 
     def actions(self, state: str) -> list:
         """ Return the actions that can be executed in the given state.
@@ -124,8 +124,22 @@ class AirCargoProblem(Problem):
             e.g. 'FTTTFF'
         :return: list of Action objects
         """
-        # TODO implement
         possible_actions = []
+        kb = PropKB()
+        kb.tell(decode_state(state, self.state_map).pos_sentence())
+        for action in self.actions_list:
+            possible = True
+            for clause in action.precond_pos:
+                if clause not in kb.clauses:
+                    possible = False
+            
+            for clause in action.precond_neg:
+                if clause in kb.clauses:
+                    possible = False
+            
+            if possible:
+                possible_actions.append(action)
+                
         return possible_actions
 
     def result(self, state: str, action: Action):
